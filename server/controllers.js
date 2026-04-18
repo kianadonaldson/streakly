@@ -2,14 +2,14 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  database: 'streakly'
 });
 
 module.exports = {
   getHabits: (req, res) => {
     const { user_id } = req.params;
 
-    const query = 'SELECT * FROM habits WHERE user_id = $1';
+    const query = 'SELECT * FROM streakly.habits WHERE user_id = $1';
 
     pool.query(query, [user_id], (err, result) => {
       if (err) {
@@ -29,7 +29,7 @@ module.exports = {
     }
 
     const query =
-      'INSERT INTO habits (user_id, name) VALUES ($1, $2) RETURNING *';
+      'INSERT INTO streakly.habits (user_id, name) VALUES ($1, $2) RETURNING *';
 
     pool.query(query, [user_id, name], (err, result) => {
       if (err) {
