@@ -1,18 +1,35 @@
 import React, { useEffect, useState } from 'react';
+import HabitForm from './components/HabitForm.js';
 
 export default function App() {
-  return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Streakly</h1>
+  const [habits, setHabits] = useState([]);
 
-      <form>
-        <input
-          type="text"
-          placeholder="Enter new habit"
-          value={null}
-        />
-        <button type="submit" style={{ marginLeft: '0.5rem' }}>Add Habit</button>
-      </form>
+  const fetchHabits = () => {
+    fetch('api/habits/1')
+    .then(res => res.json())
+    .then(setHabits);
+  }
+
+  useEffect(() => {
+    fetchHabits();
+  }, []);
+
+  const addHabit = async (name) => {
+    await fetch('api/habits', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ user_id: 1, name })
+    });
+    fetchHabits();
+  }
+
+  return (
+    <div>
+      <h1>Habit Tracker</h1>
+      <HabitForm onAdd={addHabit} />
+      {habits.map(h => (
+        <li key={h.id}>{h.name}</li>
+      ))}
     </div>
-  );
+  )
 }
