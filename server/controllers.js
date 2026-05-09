@@ -17,6 +17,7 @@ module.exports = {
         return res.status(500).json({ error: 'Database error' });
       }
 
+      console.log('result: ', result.rows);
       res.status(200).json(result.rows);
     });
   },
