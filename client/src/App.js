@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import HabitForm from './components/HabitForm.js';
+import HabitList from './components/HabitList.js';
 
 export default function App() {
   const [habits, setHabits] = useState([]);
@@ -25,11 +26,9 @@ export default function App() {
 
   return (
     <div>
-      <h1>Habit Tracker</h1>
+      <h1>Streakly Habit Tracker</h1>
       <HabitForm onAdd={addHabit} />
-      {habits.map(h => (
-        <li key={h.id}>{h.name}</li>
-      ))}
+      <HabitList habits={habits} />
     </div>
   )
 }
