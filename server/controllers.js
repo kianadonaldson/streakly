@@ -5,11 +5,54 @@ const pool = new Pool({
   database: 'streakly'
 });
 
+const calculateStreak = (dates) => {
+  if (!dates.length) return 0;
+
+  let streak = 0;
+  let currentDate = new Date();
+
+  currentDate.setHours(0, 0, 0, 0);
+
+  const sortedDates = dates
+  .map(d => new Date(d.completed_date))
+  .sort((a, b) => b - a);
+
+  for (const date of sortedDates) {
+    date.setHours(0, 0, 0, 0);
+
+    const diff =
+      (currentDate - date) /
+      (1000 * 60 * 60 * 24);
+
+    if (diff === 0 || diff === 1) {
+      streak++;
+      currentDate.setDate(
+        currentDate.getDate() - 1
+      );
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
 module.exports = {
   getHabits: (req, res) => {
     const { user_id } = req.params;
 
-    const query = 'SELECT * FROM streakly.habits WHERE user_id = $1';
+    const query = `
+      SELECT
+        h.id,
+        h.name,
+        h.created_at,
+        hl.completed_date
+      FROM streakly.habits h
+      LEFT JOIN streakly.habit_logs hl
+      ON h.id = hl.habit_id
+      WHERE h.user_id = $1
+      ORDER BY hl.completed_date DESC
+    `
 
     pool.query(query, [user_id], (err, result) => {
       if (err) {
@@ -17,8 +60,35 @@ module.exports = {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      console.log('result: ', result.rows);
-      res.status(200).json(result.rows);
+      const habits = {};
+
+      result.rows.forEach(row => {
+        if (!habits[row.id]) {
+          habits[row.id] = {
+            id: row.id,
+            name: row.name,
+            created_at: row.created_at,
+            logs: []
+          };
+        }
+
+        if (row.completed_date) {
+          habits[row.id].logs.push({
+            completed_date:
+              row.completed_date
+          });
+        }
+      });
+
+      const addStreak =
+        Object.values(habits).map(habit => ({
+          ...habit,
+          streak: calculateStreak(
+            habit.logs
+          )
+        }));
+
+      res.status(200).json(addStreak);
     });
   },
 
@@ -40,5 +110,29 @@ module.exports = {
 
       res.status(201).json(result.rows[0]);
     });
-  }
+  },
+
+  completeHabit: (req, res) => {
+    const { habit_id } = req.params;
+
+    const query = `
+      INSERT INTO streakly.habit_logs
+      (habit_id, completed_date)
+      VALUES ($1, CURRENT_DATE)
+      ON CONFLICT (habit_id, completed_date)
+      DO NOTHING
+      RETURNING *
+    `;
+
+    pool.query(query, [habit_id], (err, result) => {
+      if (err) {
+        console.error(err.stack);
+        return res.status(500).json({
+          error: 'Database error'
+        })
+      }
+
+      res.status(201).json(result.rows[0]);
+    });
+  },
 };

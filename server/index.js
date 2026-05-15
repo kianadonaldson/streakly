@@ -13,6 +13,8 @@ app.get('/api/habits/:user_id', Controller.getHabits);
 
 app.post('/api/habits', Controller.postHabits);
 
+app.post('/api/habits/:habit_id/complete', Controller.completeHabit);
+
 app.listen(port, () => {
     console.log(`We be listening on port ${port}`);
 });
