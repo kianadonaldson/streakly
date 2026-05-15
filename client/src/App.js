@@ -6,7 +6,7 @@ export default function App() {
   const [habits, setHabits] = useState([]);
 
   const fetchHabits = () => {
-    fetch('api/habits/1')
+    fetch('/api/habits/1')
     .then(res => res.json())
     .then(setHabits);
   }
@@ -16,7 +16,7 @@ export default function App() {
   }, []);
 
   const addHabit = async (name) => {
-    await fetch('api/habits', {
+    await fetch('/api/habits', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ user_id: 1, name })
@@ -24,11 +24,25 @@ export default function App() {
     fetchHabits();
   }
 
+  const completeHabit = async (habitId) => {
+    await fetch(
+      `/api/habits/${habitId}/complete`,
+      {
+        method: 'POST'
+      }
+    );
+
+    fetchHabits();
+  }
+
   return (
     <div>
       <h1>Streakly Habit Tracker</h1>
       <HabitForm onAdd={addHabit} />
-      <HabitList habits={habits} />
+      <HabitList
+        habits={habits}
+        onComplete={completeHabit}
+      />
     </div>
   )
 }
