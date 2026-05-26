@@ -1,4 +1,14 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+
+const Button = styled.button`
+  padding: 5px;
+  border-radius: 10px;
+
+  &:hover {
+    background: white;
+  }
+`;
 
 export default function HabitForm({ onAdd }) {
   const [input, setInput] = useState("");
@@ -18,7 +28,7 @@ export default function HabitForm({ onAdd }) {
       onChange={(e) => setInput(e.target.value)}
       placeholder="Enter new habit"
       />
-      <button type="submit">Add</button>
+      <Button type="submit">Add</Button>
     </form>
   );
 }

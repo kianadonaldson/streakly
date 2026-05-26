@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
+
+const Button = styled.button`
+  padding: 5px;
+  border-radius: 10px;
+
+  &:hover {
+    background: white;
+  }
+`;
 
 export default function HabitItem({ habit, onComplete }) {
 
     return (
         <div>
             <>{habit.name}</>
-            <button
+            <Button
                 onClick={() => onComplete(habit.id)}
             >
                 Complete Today
-            </button>
+            </Button>
             <>Streak: {habit.streak}</>
         </div>
     );

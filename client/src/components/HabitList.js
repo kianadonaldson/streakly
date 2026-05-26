@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import HabitItem from './HabitItem.js';
 
 export default function HabitList({ habits, onComplete }) {
@@ -11,6 +12,9 @@ export default function HabitList({ habits, onComplete }) {
                 onComplete={onComplete}
                 />
             ))}
+            <Link to="/insights">
+                View insights
+            </Link>
         </div>
     )
 }
