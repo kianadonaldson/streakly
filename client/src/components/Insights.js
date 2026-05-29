@@ -1,8 +1,51 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Flame, Trophy, TrendingUp, Percent, CalendarDays, BarChart3 } from "lucide-react";
 
 const Dashboard = styled.div`
-    text-align: center;
+    font-family: system-ui, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+`;
+
+const Header = styled.h2`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 900;
+`;
+
+const Section = styled.div`
+    margin: 16px 0;
+    border-top: 1.5px solid #BEBEC2;
+`;
+
+const Title = styled.h3`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    margin-bottom: 8px;
+`;
+
+const Row = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+`;
+
+const Label = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+`;
+
+const Value = styled.div`
+    font-weight: 500;
+`;
+
+const List = styled.ul`
+    padding-left: 18px;
 `;
 
 export default function Insights({ habits }) {
@@ -77,23 +120,48 @@ export default function Insights({ habits }) {
 
     return (
         <Dashboard>
-            <h2>Insights</h2>
-            <p>Current longest streak: {longestStreak}</p>
-            <p>
-                Habits with longest streak:{" "}
-                {longestStreakHabits.map(h => (h.name)).join(", ")}
-            </p>
-            <p>Average streak: {averageStreak} days</p>
-            <div key="rates">
-                <p>Completion Rates:</p>
+            <Header>
+                <BarChart3 size={20} /> Insights
+            </Header>
+            <Section>
+                <Title><Flame size={20} /> Current longest streak</Title>
+                <Row>
+                    <Label>Total</Label>
+                    <Value>{longestStreak}</Value>
+                </Row>
+            </Section>
+            <Section>
+                <Title><TrendingUp size={20} /> Average streak:</Title>
+                <Row>
+                    <Label>Across habits</Label>
+                    <Value>{averageStreak} days</Value>
+                </Row>
+            </Section>
+            <Section>
+                <Title><Trophy size={20} /> Habits with longest streak:{" "}</Title>
+                <List>
+                {longestStreakHabits.map(h => <li>{h.name}</li>)}
+                </List>
+            </Section>
+            <Section>
+                <Title><Percent size={20} /> Completion Rates:</Title>
+                
                 {completionRates.map(item => (
-                    <>
-                        <p>{item.name}:</p>
-                        <p>{item.completedDates} / {item.totalDateSpan} days
-                        = {item.percentage}%</p>
-                    </>
+                    <div key={item.name}>
+                        <Row>
+                            <Label>{item.name}</Label>
+                            <Value>{item.percentage}%</Value>
+                        </Row>
+                        
+                        <Row>
+                            <Label>
+                                <CalendarDays size={20} />
+                                {item.completedDates} / {item.totalDateSpan} days
+                            </Label>
+                        </Row>
+                    </div>
                 ))}
-            </div>
+            </Section>
         </Dashboard>
     );
 }
