@@ -67,8 +67,17 @@ export default function App() {
         method: 'POST'
       }
     );
-
     fetchHabits();
+  }
+
+
+  const deleteHabit = async (habitId) => {
+    await fetch(`/api/habits/${habitId}`, {
+      method: 'DELETE'
+    });
+    setHabits(prev =>
+      prev.filter(habit => habit.id !== habitId)
+    );
   }
 
   return (
@@ -86,7 +95,8 @@ export default function App() {
             <HabitForm onAdd={addHabit} />
             <HabitList
               habits={habits}
-              onComplete={completeHabit} />
+              onComplete={completeHabit}
+              onDelete={deleteHabit} />
           </>
         } />
         <Route path="/insights" element={

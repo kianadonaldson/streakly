@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Plus } from 'lucide-react';
 
 const Form = styled.form`
   display: flex;
@@ -8,7 +9,7 @@ const Form = styled.form`
 `;
 
 const Button = styled.button`
-  padding: 1px 10px 3px 10px;
+  padding: 3px 9px 3px 9px;
   border-radius: 50px;
   font-family: system-ui, sans-serif;
   font-size: 25px;
@@ -40,7 +41,9 @@ export default function HabitForm({ onAdd }) {
       onChange={(e) => setInput(e.target.value)}
       placeholder="Enter new habit"
       />
-      <Button type="submit">+</Button>
+      <Button type="submit">
+        <Plus size={20}></Plus>
+      </Button>
     </Form>
   );
 }

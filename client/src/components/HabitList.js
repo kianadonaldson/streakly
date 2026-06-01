@@ -1,7 +1,7 @@
 import React from 'react';
 import HabitItem from './HabitItem';
 
-export default function HabitList({ habits, onComplete }) {
+export default function HabitList({ habits, onComplete, onDelete }) {
     return (
         <div>
             {habits.map(h => (
@@ -9,6 +9,7 @@ export default function HabitList({ habits, onComplete }) {
                 key={h.id}
                 habit={h}
                 onComplete={onComplete}
+                onDelete={onDelete}
                 />
             ))}
         </div>
