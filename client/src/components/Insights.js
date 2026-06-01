@@ -84,8 +84,6 @@ export default function Insights({ habits }) {
 
         if (!habitLogs.length) return [];
 
-        const results = [];
-
         return habitLogs.map(log => {
             
             const sortedDates = [...log.dates].sort((a, b) => a - b);
@@ -96,9 +94,13 @@ export default function Insights({ habits }) {
             firstDate.setHours(0, 0, 0, 0);
             currentDate.setHours(0, 0, 0, 0);
 
-            const totalDateSpan = Math.floor(
+            const diff =
                 (currentDate - firstDate) /
-                (1000 * 60 * 60 * 24)) + 1;
+                (1000 * 60 * 60 * 24);
+
+            const totalDateSpan = Number.isNaN(diff)
+                ? 0
+                : Math.floor(diff) + 1;
             
             const completedDates = sortedDates.length;
             
@@ -140,7 +142,7 @@ export default function Insights({ habits }) {
             <Section>
                 <Title><Trophy size={20} /> Habits with longest streak:{" "}</Title>
                 <List>
-                {longestStreakHabits.map(h => <li>{h.name}</li>)}
+                {longestStreakHabits.map(h => <li key={h.id}>{h.name}</li>)}
                 </List>
             </Section>
             <Section>
