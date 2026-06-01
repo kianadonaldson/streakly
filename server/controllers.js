@@ -49,9 +49,9 @@ module.exports = {
         hl.completed_date
       FROM streakly.habits h
       LEFT JOIN streakly.habit_logs hl
-      ON h.id = hl.habit_id
+        ON h.id = hl.habit_id
       WHERE h.user_id = $1
-      ORDER BY hl.completed_date DESC
+      ORDER BY h.id, hl.completed_date DESC
     `
 
     pool.query(query, [user_id], (err, result) => {
@@ -135,4 +135,25 @@ module.exports = {
       res.status(201).json(result.rows[0]);
     });
   },
+
+  deleteHabit: (req, res) => {
+    const { habit_id } = req.params;
+
+    const query = `
+      DELETE FROM streakly.habits
+      WHERE id = $1
+      RETURNING *
+    `;
+
+    pool.query(query, [habit_id], (err, result) => {
+      if (err) {
+        console.error(err.stack);
+        return res.status(500).json({
+          error: 'Database error'
+        })
+      }
+
+      res.status(200).json(result.rows[0]);
+    })
+  }
 };
