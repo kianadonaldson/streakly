@@ -12,15 +12,24 @@ CREATE TABLE habits (
   id SERIAL PRIMARY KEY,
   user_id INTEGER,
   name TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT NOW(),
+
+  FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE habit_logs (
   id SERIAL PRIMARY KEY,
   habit_id INTEGER NOT NULL REFERENCES habits(id) ON DELETE CASCADE,
   completed_date DATE NOT NULL,
+
+  FOREIGN KEY (habit_id)
+    REFERENCES habits(id)
+    ON DELETE CASCADE,
+
   UNIQUE (habit_id, completed_date)
 );
 
 CREATE INDEX idx_habits_user_id ON habits(user_id);
-CREATE INDEX idx_logs_habit_id ON habit_logs(habit_id);
+CREATE INDEX idx_habit_logs_habit_id ON habit_logs(habit_id);
