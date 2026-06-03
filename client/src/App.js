@@ -65,8 +65,7 @@ export default function App() {
       `/api/habits/${habitId}/complete`,
       {
         method: 'POST'
-      }
-    );
+      });
     fetchHabits();
   }
 
