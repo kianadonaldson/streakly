@@ -9,9 +9,10 @@ const calculateStreak = (dates) => {
   if (!dates.length) return 0;
 
   let streak = 0;
-  let currentDate = new Date();
+  let expectedDate = new Date();
+  let firstDate = true;
 
-  currentDate.setHours(0, 0, 0, 0);
+  expectedDate.setHours(0, 0, 0, 0);
 
   const sortedDates = dates
   .map(d => new Date(d.completed_date))
@@ -21,14 +22,21 @@ const calculateStreak = (dates) => {
     date.setHours(0, 0, 0, 0);
 
     const diff =
-      (currentDate - date) /
+      (expectedDate - date) /
       (1000 * 60 * 60 * 24);
 
-    if (diff === 0 || diff === 1) {
+    if (firstDate && (diff === 0 || diff === 1)) {
       streak++;
-      currentDate.setDate(
-        currentDate.getDate() - 1
+      firstDate = false;
+
+      expectedDate = new Date(date);
+      expectedDate.setDate(
+        expectedDate.getDate() - 1
       );
+    } else if (!firstDate && diff === 0) {
+      streak++;
+
+      expectedDate.setDate(expectedDate.getDate() - 1);
     } else {
       break;
     }
@@ -38,6 +46,8 @@ const calculateStreak = (dates) => {
 }
 
 module.exports = {
+  calculateStreak,
+
   getHabits: (req, res) => {
     const { user_id } = req.params;
 
