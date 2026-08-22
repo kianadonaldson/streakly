@@ -17,7 +17,7 @@ const Button = styled.button`
 
 const HabitCard = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   align-items: center;
   justify-items: start;
   gap: 15px;
@@ -31,24 +31,47 @@ const Streak = styled.p`
   font-weight: 200;
 `;
 
-export default function HabitItem({ habit, onComplete, onDelete }) {
+export default function HabitItem({ habit, onComplete, onDelete, onUpdate }) {
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(habit.name);
 
-    return (
-        <HabitCard>
-            <HabitTitle>
-              {habit.name}
-            </HabitTitle>
-            <Button
-              onClick={() => onComplete(habit.id)}
-            >
-              Complete Today
-            </Button>
-            <Streak>Streak: {habit.streak}</Streak>
-            <Button
-              onClick={() => onDelete(habit.id)}
-            >
-              <X size={20}></X>
-            </Button>
-        </HabitCard>
-    );
+  return (
+    <HabitCard>
+      {editing ? (
+        <>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <Button
+            onClick={() => {
+              onUpdate(habit.id, name);
+              setEditing(false);
+            }}
+          >
+            Save
+          </Button>
+        </>
+      ) : (
+        <>
+          <HabitTitle>{habit.name}</HabitTitle>
+
+          <Button onClick={() => setEditing(true)}>
+            Edit
+          </Button>
+
+          <Button onClick={() => onComplete(habit.id)}>
+            Complete Today
+          </Button>
+
+          <Streak>Streak: {habit.streak}</Streak>
+
+          <Button onClick={() => onDelete(habit.id)}>
+            <X size={20} />
+          </Button>
+        </>
+      )}
+    </HabitCard>
+  );
 }
