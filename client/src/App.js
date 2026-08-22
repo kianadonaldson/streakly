@@ -79,6 +79,15 @@ export default function App() {
     );
   }
 
+  const updateHabit = async (habitId, name) => {
+    await fetch(`/api/habits/${habitId}`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ name })
+    });
+    fetchHabits();
+  }
+
   return (
     <Page>
       <Title>Streakly Habit Tracker</Title>
@@ -95,7 +104,9 @@ export default function App() {
             <HabitList
               habits={habits}
               onComplete={completeHabit}
-              onDelete={deleteHabit} />
+              onDelete={deleteHabit}
+              onUpdate={updateHabit}
+            />
           </>
         } />
         <Route path="/insights" element={
