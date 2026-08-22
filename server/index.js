@@ -17,6 +17,8 @@ app.post('/api/habits/:habit_id/complete', Controller.completeHabit);
 
 app.delete('/api/habits/:habit_id', Controller.deleteHabit);
 
+app.put('/api/habits/:habit_id', Controller.updateHabit);
+
 app.listen(port, () => {
     console.log(`We be listening on port ${port}`);
 });

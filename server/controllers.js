@@ -165,5 +165,28 @@ module.exports = {
 
       res.status(200).json(result.rows[0]);
     })
+  },
+
+  updateHabit: (req, res) => {
+    const { habit_id} = req.params;
+    const { name } = req.body;
+
+    const query = `
+      UPDATE streakly.habits
+      SET name = $2
+      WHERE id = $1
+      RETURNING *
+    `;
+
+    pool.query(query, [habit_id, name], (err, result) => {
+      if (err) {
+        console.error(err.stack);
+        return res.status(500).json({
+          error: 'Database error'
+        })
+      }
+
+      res.status(200).json(result.rows[0]);
+    })
   }
 };
