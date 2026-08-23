@@ -17,7 +17,7 @@ const Button = styled.button`
 
 const HabitCard = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   align-items: center;
   justify-items: start;
   gap: 15px;
@@ -31,9 +31,24 @@ const Streak = styled.p`
   font-weight: 200;
 `;
 
+const Status = styled.p`
+  font-weight: 200;
+`;
+
 export default function HabitItem({ habit, onComplete, onDelete, onUpdate }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(habit.name);
+
+  const todaysLog = habit.logs.some(log => {
+    const completedDate = new Date(log.completed_date);
+    const today = new Date();
+
+    return (
+      completedDate.getFullYear() === today.getFullYear() &&
+      completedDate.getMonth() === today.getMonth() &&
+      completedDate.getDate() === today.getDate()
+    );
+  })
 
   return (
     <HabitCard>
@@ -70,6 +85,9 @@ export default function HabitItem({ habit, onComplete, onDelete, onUpdate }) {
           <Button onClick={() => onDelete(habit.id)}>
             <X size={20} />
           </Button>
+          <>
+          {todaysLog && <Status>Completed Today</Status>}
+          </>
         </>
       )}
     </HabitCard>
